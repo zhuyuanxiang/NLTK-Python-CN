@@ -1,0 +1,11 @@
+body: sleep
+cease: wake
+condition: sleep
+down: walk
+each: walk
+foot: walk
+lifting: walk
+mind: sleep
+progress: walk
+setting: walk
+sleep: wake

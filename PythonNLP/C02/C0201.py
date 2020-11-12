@@ -19,6 +19,11 @@ from nltk.corpus import gutenberg
 from tools import *
 
 # Chap2 获取文本语料库 和 词汇资源
+# 目的：
+# 1.  什么是有用的文本语料库和词汇资源？如何使用 Python 获取它们？
+# 2.  哪些 Python 结构最适合这项工作？
+# 3.  编写 Python 代码时如何避免重复的工作？
+
 # 2.1. 获取文本语料库
 # 2.1.1. 古腾堡语料库
 show_subtitle("古腾堡语料库的文件列表")

@@ -143,12 +143,16 @@ for phone in pron:
         print(char, end=',')
     print()
 
-# P69 使用条件频率分布寻找相应词汇的最小对比集，找到所有p开头的三音素词，并比照它们的第一个和最后一个音素来分组
-p3 = [(pron[0] + '-' + pron[2], word) for (word, pron) in entries if pron[0] == 'P' and len(pron) == 3]
-
+# P69 使用条件频率分布寻找相应词汇的最小对比集
+# 找到所有 P 开头的三音素词，并比照它们的第一个和最后一个音素来分组
+p3 = [
+        (pron[0] + '-' + pron[2], word)
+        for (word, pron) in entries
+        if pron[0] == 'P' and len(pron) == 3
+]
 cfd = nltk.ConditionalFreqDist(p3)
 cfd.tabulate(conditions=['P-P', 'P-R'])
-cfd['P-P']
+print("cfd['P-P']= ", cfd['P-P'])
 for template in cfd.conditions():
     if len(cfd[template]) > 10:
         words = cfd[template].keys()
@@ -157,46 +161,64 @@ for template in cfd.conditions():
 
 # 访问词典的方式
 prondict = nltk.corpus.cmudict.dict()
-prondict['fire']
-prondict['blog']  # 词典中没有，报错KeyError
+print("prondict['fire']= ", prondict['fire'])
+# print("prondict['blog'] = ",prondict['blog']  # 词典中没有，报错KeyError
+# 词典元素赋值
 prondict['blog'] = [['B', 'L', 'AA1', 'G']]
-prondict['blog']
+print("prondict['blog']= ", prondict['blog'])
 
 # 在词典中寻找单词的发音
 text = ['natural', 'language', 'processing']
-[ph for w in text for ph in prondict[w][0]]
+pron_list = [
+        ph
+        for w in text
+        for ph in prondict[w][0]
+]
+print("word pronoun list= ", pron_list)
 
 # 加[0]是因为natural有两个发音，取其中一个就好了
-[ph for w in text for ph in prondict[w]]
-prondict['natural']
+pron_list = [
+        ph
+        for w in text
+        for ph in prondict[w]
+]
+print("'natural' pronoun list= ", pron_list)
+print("prondict['natural']=", prondict['natural'])
 
-# P70 4.3. 比较词表（Swadesh wordlists），包括几种语言的约200个常用词的列表，可以用于比较两个语言之间的差别，也可以用于不同语言的单词翻译
+# P70 2.4.3 比较词表（Swadesh wordlists）
+# 包括几种语言的约200个常用词的列表，可以用于比较两个语言之间的差别，也可以用于不同语言的单词翻译
 from nltk.corpus import swadesh
 
-swadesh.fileids()
-swadesh.words('en')
+print("swadesh.fileids()= ", swadesh.fileids())
+print("swadesh.words('en')= ", swadesh.words('en'))
 
 fr2en = swadesh.entries(['fr', 'en'])
-fr2en
+print("fr2en= ", fr2en[:13])
 translate = dict(fr2en)
-translate['chien']
+print("translate= ", translate)
+print("translate['chien']= ", translate['chien'])
 
 de2en = swadesh.entries(['de', 'en'])
 translate.update(dict(de2en))
 es2en = swadesh.entries(['es', 'en'])
 translate.update(dict(es2en))
-translate['jeter']
-translate['Hund']
-translate['perro']
+print("translate= ", translate)
+
+print("translate['jeter']= ", translate['jeter'])
+print("translate['Hund']= ", translate['Hund'])
+print("translate['perro']= ", translate['perro'])
 
 languages = ['en', 'de', 'nl', 'es', 'fr', 'pt', 'la']
 for i in [139, 140, 141, 142]:
     print(swadesh.entries(languages)[i])
 
-# P71 4.4. 词汇工具 Toolbox Shoebox，是由一些条目的集合组成，每个条目由一个或多个字段组成，大多数字段都是可选的或者重复的
+# P71 2.4.4 词汇工具 Toolbox Shoebox，是由一些条目的集合组成，每个条目由一个或多个字段组成，大多数字段都是可选的或者重复的
 
 from nltk.corpus import toolbox
 
+# 罗托卡特语(Rotokas) 的词典
+# 第一个条目(kaa)，表示「窒息」
 rotokas = toolbox.entries('rotokas.dic')
-for word in rotokas:
-    print(word)
+for i, word in enumerate(rotokas):
+    if i <= 13:
+        print(word)

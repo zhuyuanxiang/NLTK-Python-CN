@@ -16,9 +16,12 @@
 """
 
 
-def lexical_diversity(text):
+def lexical_diversity(my_text_data):
     """每个单词的平均使用次数"""
-    return len(text) / len(set(text))
+    word_count = len(my_text_data)
+    vocab_size = len(set(my_text_data))
+    diversity_score = vocab_size / word_count
+    return diversity_score
 
 
 def percentage(count, total):

@@ -14,9 +14,6 @@
 @Desc       :   
 @理解：
 """
-# 2.2. 条件频率分布：是频率分布的集合，每个频率分布有一个不同的“条件”。(condition,word)根据condition（条件）统计word（单词）的频率。
-# 2.2.1. 条件 和 事件
-# 2.2.2. 按文体计数词汇
 from nltk.corpus import brown
 
 from tools import *
@@ -27,6 +24,9 @@ from tools import *
 # 2.  哪些 Python 结构最适合这项工作？
 # 3.  编写 Python 代码时如何避免重复的工作？
 
+# 2.2. 条件频率分布：是频率分布的集合，每个频率分布有一个不同的“条件”。(condition,word)根据condition（条件）统计word（单词）的频率。
+# 2.2.1. 条件 和 事件
+# 2.2.2. 按文体计数词汇
 cfd = nltk.ConditionalFreqDist(
         (genre, word)
         for genre in ['news', 'romance']
@@ -86,10 +86,21 @@ brown_cfd = nltk.ConditionalFreqDist(
 )
 brown_cfd.tabulate(samples=sorted(days))
 
-# 2.4. 使用二元语法（双边词）生成随机文本
+# 2.2.4 使用二元语法（双边词）生成随机文本
 # nltk.bigrams()生成连续的词对链表
 sent = ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven', 'and', 'the', 'earth', '.for ']
 list(nltk.bigrams(sent))
+
+text = nltk.corpus.genesis.words('english-kjv.txt')
+bigrams = nltk.bigrams(text)
+cfd = nltk.ConditionalFreqDist(bigrams)
+
+# 打印出来的结果 和 直接访问的结果不一样
+print("bigrams= ", bigrams)
+print("cfd['living']= ", cfd['living'])
+print("dict(cfd['living'])= ", dict(cfd['living']))
+print("cfd['living'].max()= ", cfd['living'].max())
+print("cfd['finding'].max()= ", cfd['finding'].max())
 
 
 # P59 Ex2-1 产生随机文本
@@ -97,17 +108,15 @@ def generate_model(cfdist, word, num=15):
     for i in range(num):
         print(word, end=' ')
         word = cfdist[word].max()  # 选择与原单词匹配度最大的单词作为下一个单词
+    print()
 
 
-text = nltk.corpus.genesis.words('english-kjv.txt')
-bigrams = nltk.bigrams(text)
-cfd = nltk.ConditionalFreqDist(bigrams)
-
-# 打印出来的结果 和 直接访问的结果不一样
-print(cfd['living'])
-cfd['living']
-cfd['living'].max()
-cfd['finding'].max()
+show_subtitle('living')
+generate_model(cfd, 'living')
+show_subtitle('beginning')
+generate_model(cfd, 'beginning')
+show_subtitle('finding')
+generate_model(cfd, 'finding')
 
 generate_model(cfd, 'living')
 generate_model(cfd, 'beginning')

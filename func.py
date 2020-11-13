@@ -31,10 +31,7 @@ def percentage(count, total):
 
 
 def plural(word):
-    """
-    Args:
-        word:
-    """
+    """Ex2-2：生成任意英语名词的复数形式"""
     if word.endswith('y'):
         return word[:-1] + 'ies'
     elif word[-1] in 'sx' or word[-2:] in ['sh', 'ch']:
@@ -46,10 +43,7 @@ def plural(word):
 
 
 def unusual_words(text):
-    """
-    Args:
-        text:
-    """
+    """Ex2-3：过滤文本：计算文本的词汇表，删除所有在现有的词汇列表中出现的元素，只留下罕见的 或者 拼写错误的 词汇"""
     text_vocab = set(w.lower() for w in text if w.isalpha())
     english_vocab = set(w.lower() for w in nltk.corpus.words.words())
     unusual = text_vocab.difference(english_vocab)

@@ -48,3 +48,20 @@ def unusual_words(text):
     english_vocab = set(w.lower() for w in nltk.corpus.words.words())
     unusual = text_vocab.difference(english_vocab)
     return sorted(unusual)
+
+
+def content_fraction(text):
+    """计算文本中不包含在停用词列表中的词所占的比例"""
+    stopwords = nltk.corpus.stopwords.words('english')
+    content = [w for w in text if w.lower() not in stopwords]
+    return len(content) / len(text)
+
+
+def stress(pron):
+    """定义提取重音数字的函数"""
+    return [
+            char
+            for phone in pron
+            for char in phone
+            if char.isdigit()
+    ]

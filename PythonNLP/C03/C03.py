@@ -97,7 +97,7 @@ type(raw)
 # 看看当前目录下面还有啥文件？
 import os
 
-os.listdir('.')
+os.listdir('..')
 
 # 从 PDF、MS Word 及其他二进制格式中提取文本
 

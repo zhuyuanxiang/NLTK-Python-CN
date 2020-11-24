@@ -21,10 +21,6 @@ from nltk.corpus import names
 
 from tools import show_subtitle
 
-# 6.1.1 性别鉴定
-# 性别鉴定：以名字的最后一个字母为特征
-
-
 # Chap6 学习分类文本
 # 学习目标：
 # 1.  识别出语言数据中可以用于分类的特征

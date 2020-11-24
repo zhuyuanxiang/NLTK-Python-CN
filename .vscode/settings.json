@@ -1,4 +1,5 @@
 {
     "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\DataAnalysis\\python.exe",
-    "python.dataScience.jupyterServerURI": "local"
+    "jupyter.jupyterServerType": "local",
+    "jupyter.notebookFileRoot": "${workspaceFolder}"
 }

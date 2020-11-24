@@ -1,7 +1,11 @@
 <component name="ProjectDictionaryState">
   <dictionary name="zhuyuanxiang">
     <words>
+      <w>bigrams</w>
+      <w>fdist</w>
       <w>fileids</w>
+      <w>spectroroute</w>
+      <w>wordlens</w>
     </words>
   </dictionary>
 </component>

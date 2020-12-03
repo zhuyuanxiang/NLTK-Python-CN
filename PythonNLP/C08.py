@@ -175,6 +175,7 @@ productions[0].lhs()
 # Ex8-3 使用符合语句规则的子串表接收器
 def init_wfst(tokens, grammar):
     numtokens = len(tokens)
+    # 生成 None 组成的 wfst 列表数组
     wfst = [[None for i in range(numtokens + 1)] for j in range(numtokens + 1)]
     for i in range(numtokens):
         productions = grammar.productions(rhs=tokens[i])
@@ -183,10 +184,12 @@ def init_wfst(tokens, grammar):
 
 
 def complete_wfst(wfst, tokens, grammar, trace=False):
-    index = dict((p.rhs(), p.lhs()) for p in grammar.productions())
-    numtokens = len(tokens)
-    for span in range(2, numtokens + 1):
-        for start in range(numtokens + 1 - span):
+    index = dict(
+        (production.rhs(), production.lhs())
+        for production in grammar.productions())
+    num_tokens = len(tokens)
+    for span in range(2, num_tokens + 1):
+        for start in range(num_tokens + 1 - span):
             end = start + span
             for mid in range(start + 1, end):
                 nt1, nt2 = wfst[start][mid], wfst[mid][end]
@@ -199,11 +202,14 @@ def complete_wfst(wfst, tokens, grammar, trace=False):
 
 
 def display(wfst, tokens):
-    print('\nWFST ' + ' '.join([("%-4d" % i) for i in range(1, len(wfst))]))
-    for i in range(len(wfst) - 1):
-        print("%d   " % i, end=" ")
+    print('\nWFST ' + ' '.join(
+        [
+            ("%-4d" % idx)
+            for idx in range(1, len(wfst))]))
+    for idx in range(len(wfst) - 1):
+        print("%d   " % idx, end=" ")
         for j in range(1, len(wfst)):
-            print("%-4s" % (wfst[i][j] or '.'), end=" ")
+            print("%-4s" % (wfst[idx][j] or '.'), end=" ")
         print()
 
 
@@ -220,11 +226,12 @@ display(wfst1, tokens)
 
 nltk.app.chartparser()
 
-# 5. 依存关系 和 依存文法
+# 8.5 依存关系 和 依存文法
 # 短语结构文法：描述句子中的词和词序列的结合方式
 # 依存文法：描述词与其他词之间的关系
 # 依存关系是一个中心词与其从属之间二元非对称关系。
 # 一个句子的中心词通常是动词，其他词直接依赖于中心词或者通过某些路径依赖于中心词
+
 # 下面是NLTK为依存文法编码的一种方式，只能捕捉依存关系信息，不能指定依存关系的类型
 groucho_dep_grammar = nltk.DependencyGrammar.fromstring("""
 'shot' -> 'I' | 'elephant' | 'in'
@@ -238,8 +245,9 @@ print(groucho_dep_grammar)
 # 一个词及其所有子节点在句子中形成了一个连续的词序列。
 pdp = nltk.ProjectiveDependencyParser(groucho_dep_grammar)
 sent = 'I shot an elephant in my pajamas'.split()
-trees = pdp.parse(sent)
-for tree in trees:
+tree = []
+for i, tree in enumerate(pdp.parse(sent)):
+    show_subtitle(f"第 {i + 1} 个结构")
     print(tree)
 tree.draw()
 
@@ -251,22 +259,23 @@ tree.draw()
 # 4）H选择D并且决定它是必须的还是可选的
 # 5）D的形态由H决定
 
-# 5.1 配价与词汇
+# 8.5.1 配价与词汇
 # 动词的配价（Valency）指动词在句子中对名词或者名词性成分的支配能力。
 # 动词的价就是句中的核心动词可以直接支配的名词或者名词性成分的数量。
 # 表8-3中的动词被认为具有不同的配价。配价限制不仅适用于动词，也适应于其他类的中心词。
 
-# 5.2 扩大规模
+# 8.5.2 扩大规模
 # “玩具文法”：用于演示分析过程中关键环节的小型文法。将文法扩大到覆盖自然语言中的大型语料库非常困难。
 # 比较成功的文法项目
 # * 词汇功能语法（LFG） Pargram项目
 # * 中心词驱动短语结构文法（HPSG）LinGO项目
 # * 邻接着文法XTAG的词汇化树项目
 
-# 6. 文法开发
+# 8.6 文法开发
 # 解析器根据短语结构文法在句子上建立树。
 
-# 6.1. 树库 和 文法：使用宾州树库
+# 8.6.1 树库 和 文法：使用宾州树库
+
 from nltk.corpus import treebank
 
 t = treebank.parsed_sents('wsj_0001.mrg')[0]
@@ -279,9 +288,12 @@ def filter(tree):
     return (tree.label() == 'VP') and ('S' in child_nodes)
 
 
-VPS = [subtree for tree in treebank.parsed_sents() for subtree in tree.subtrees(filter)]
-print(VPS[1])
-VPS[0].draw()
+VPS = [
+    subtree
+    for tree in treebank.parsed_sents()
+    for subtree in tree.subtrees(filter)]
+print(VPS[0])
+VPS[1].draw()
 
 # Prepositional Phrase Attachment Corpus. 介词短语附着语料库，是特别动词配价的信息源
 # 搜索语料库，找出具有固定介词和名词和介词短语对，其中介绍短语附着到VP还是NP由选择的动词决定
@@ -297,14 +309,18 @@ for key in sorted(table):
     if len(table[key]) > 1:
         print(key, 'N: ', sorted(table[key]['N']), 'V:', sorted(table[key]['V']))
 
-key, table[key], len(table[key])
-table['access-to-AZT']
-table['offer-from-group']
+print("key=", key)
+print("table[key]= ", table[key])
+print("len(table[key])= ", len(table[key]))
+print("table['zip-in-way']= ", table['zip-in-way'])
+print("table['access-to-AZT']= ", table['access-to-AZT'])
+print("table['offer-from-group']= ", table['offer-from-group'])
 
 # 现代汉语中央研究院平衡语料库中的10000句已经分析的句子
 nltk.corpus.sinica_treebank.parsed_sents()[3450].draw()
 
-# 6.2. 有害的歧义
+# 8.6.2 有害的歧义
+
 grammar = nltk.CFG.fromstring("""
 S -> NP V NP
 NP -> NP Sbar
@@ -316,12 +332,14 @@ V -> 'fish'
 # 当fish的数量为（3，5，7...），分析树的数量是（1，2，5...），这是Catalan数
 tokens = ['fish'] * 5
 cp = nltk.ChartParser(grammar)
-for tree in cp.parse(tokens):
+for i, tree in enumerate(cp.parse(tokens)):
+    show_subtitle(f"第 {i + 1} 个结构")
     print(tree)
 
 
-# 6.3. 加权语法
-# Ex8.5. 宾州树库样本中 give 和 gave 的用法
+# 8.6.3 加权语法
+
+# Ex8-5: 宾州树库样本中 give 和 gave 的用法
 # 检查所有包含 give 介词格和双宾语结构的实例
 def give(t):
     result = t.label() == 'VP' and len(t) > 2 and t[1].label() == 'NP'  # give 双宾语结构
@@ -330,12 +348,13 @@ def give(t):
     return result
 
 
-def sent(t):
-    return ' '.join(token for token in t.leaves() if token[0] not in '*-0')
+def sent(tree):
+    return ' '.join(token for token in tree.leaves() if token[0] not in '*-0')
 
 
 def print_node(t, width):
-    output = '%s %s: %s / %s: %s' % (sent(t[0]), t[1].label(), sent(t[1]), t[2].label(), sent(t[2]))
+    output = '%s %s: %s / %s: %s' % (
+        sent(t[0]), t[1].label(), sent(t[1]), t[2].label(), sent(t[2]))
     if len(output) > width:
         output = output[:width] + '...'
     print(output)
@@ -346,7 +365,7 @@ for tree in nltk.corpus.treebank.parsed_sents():
         print_node(t, 72)
 print(t)
 
-# Ex 8.6. 定义一个概率上下文无关文法（PCFG）
+# Ex8-6: 定义一个概率上下文无关文法（PCFG）
 # 只是演示了一个概率上下文无关文法的作用，也是个玩具文法
 grammar = nltk.PCFG.fromstring("""
 S    -> NP VP              [1.0]
@@ -360,13 +379,12 @@ NP   -> 'telescopes'       [0.8]
 NP   -> 'Jack'             [0.2]
 """)
 
-print(grammar)
-
 viterbi_parser = nltk.ViterbiParser(grammar)
-for tree in viterbi_parser.parse(['Jack', 'saw', 'telescopes']):
+for i, tree in enumerate(viterbi_parser.parse(['Jack', 'saw', 'telescopes'])):
+    show_subtitle(f"第 {i + 1} 个结构")
     print(tree)
 
-# 7 小结
+# 8.7 小结
 # * 句子的内部结构用树来表示。组织结构的显著特点是：递归、中心词、补语和修饰语
 # * 文法是可能句子的集合的紧凑型特性：一棵树是符合语法规则的，或者文法是可以授权给一棵树的
 # * 文法是一种用于描述给定短语是否可以被分配给特定成分或者依存结构的形式化模型

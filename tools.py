@@ -40,6 +40,10 @@ def show_subtitle(message):
     print('-' * 15, '>' + message + '<', '-' * 15)
     pass
 
+def show_expr(expr):
+    print("β-约简=",expr.simplify())  # β-约简
+    print("free()=",expr.free())
+    print(expr)
 
 def plot_feature_importance(model, dataset):
     n_features = dataset.data.shape[1]

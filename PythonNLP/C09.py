@@ -6,7 +6,7 @@ import nltk
 # 2）特征结构的主要形式化发生是什么？如何使用它们来计算？
 # 3）基于特征的文法能够获得哪些语言模式和文法结构？
 
-# 1. 语法特征
+# 9.1 语法特征
 # 在基于规则的上下文语法中，特征——值偶对被称为特征结构。
 # 字典存储特征以及特征的值
 # 'CAT' 表示语法类别；'ORTH'：表示正字法（正词法，拼写规则）
@@ -40,11 +40,11 @@ surprise = {'CAT': 'V', 'ORTH': 'surprised', 'REL': 'surprise', 'SRC': 'SBJ', 'E
 
 # 特征结构是非常强大的，特征的额外表现力（Ref：Sec 9.3）开辟了用于描述语言结构复杂性的可能。
 
-# 1.1 句法协议
+# 9.1.1 句法协议
 # 协议（agreement）：动词的形态属性和主语名词短语的句法属性一起变化的过程。
 # 表9-1 英语规则动词的协议范式
 
-# 1.2 使用属性和约束
+# 9.1.2 使用属性和约束
 # Ex9-1 基于特征的语法的例子
 nltk.data.show_cfg('grammars/book_grammars/feat0.fcfg')
 
@@ -56,13 +56,13 @@ cp = load_parser('grammars/book_grammars/feat0.fcfg', trace = 2)
 for tree in cp.parse(tokens):
     print(tree)
 
-# 1.3 术语
+# 9.1.3 术语
 # 简单的值通常称为原子。
 #   原子值的一种特殊情况是布尔值。
 # AGR是一个复杂值。
 # 属性——值矩阵（Attribute-Value Matrix，AVM）
 
-# 2. 处理特征结构
+# 9.2 处理特征结构
 # 特征结构的构建；两个不同特征结构的统一（合一）运算。
 fs1 = nltk.FeatStruct(TENSE = 'past', NUM = 'sg')
 print(fs1)
@@ -87,7 +87,7 @@ print(nltk.FeatStruct(NAME = 'Lee', TELNO = '13918181818', AGE = 33))
 # 括号()里面的整数称为标记或者同指标志（coindex）。
 print(nltk.FeatStruct("""[Name='Lee', ADDRESS=(1)[NUMBER=74,STREET='rue Pascal'],SPOUSE=[NAME='Kim',ADDRESS->(1)]]"""))
 
-# 2.1 包含（蕴涵） 和 统一（合一） （Ref：《自然语言处理综论》Ch15）
+# 9.2.1 包含（蕴涵） 和 统一（合一） （Ref：《自然语言处理综论》Ch15）
 # 一般的特征结构包含（蕴涵）特殊的特征结构
 # 合并两个特征结构的信息称为统一（合一），统一（合一）运算是对称的。
 # 合一的相容运算
@@ -96,27 +96,28 @@ fs2 = nltk.FeatStruct(CITY = 'Paris')
 print(fs1.unify(fs2))
 print(fs2.unify(fs1))
 print(fs1.unify(fs2) == fs2.unify(fs1))
+
 # 合一的失败运算
 fs0 = nltk.FeatStruct(A = 'a')
 fs1 = nltk.FeatStruct(A = 'b')
 fs2 = fs0.unify(fs1)
 print(fs2)
 
-fs1 = nltk.FeatStruct("[SPOUSE=[ADDRESS=[CITY=Paris]]]")
 
+fs0 = nltk.FeatStruct("[SPOUSE=[ADDRESS=[CITY=Paris]]]")
 # 无同指标志的特征结构的相容运算
-fs0 = nltk.FeatStruct("""[Name='Lee', 
+fs1 = nltk.FeatStruct("""[Name='Lee', 
 ADDRESS=[NUMBER=74,STREET='rue Pascal'],
 SPOUSE=[NAME='Kim',
 ADDRESS=[NUMBER=74,STREET='rue Pascal']]]""")
-print(fs1.unify(fs0))
+print(fs0.unify(fs1))
 
 # 有同指标志的特征结构的相容运算
 fs2 = nltk.FeatStruct("""[Name='Lee', 
 ADDRESS=(1)[NUMBER=74,STREET='rue Pascal'],
 SPOUSE=[NAME='Kim',
 ADDRESS->(1)]]""")
-print(fs1.unify(fs2))
+print(fs0.unify(fs2))
 
 # 使用变量?x表示的特征结构的相容运算
 fs1 = nltk.FeatStruct("[ADDRESS1=[NUMBER=74, STREET='rue Pascal'], ADDRESS4=[NAME='Lee']]")
@@ -124,22 +125,23 @@ fs2 = nltk.FeatStruct("[ADDRESS1=?x, ADDRESS2=?x, ADDRESS3=?y, ADDRESS4=?y]")
 print(fs2)
 print(fs2.unify(fs1))
 
-# 3 扩展基于特征的文法（语法）
-# 3.1 子类别（次范畴化）
+# 9.3 扩展基于特征的文法（语法）
+# 9.3.1 子类别（次范畴化）
 # 广义短语结构语法（Generalized Phrase Structure Grammar，GPSG），
 # 允许词汇类别支持SUBCAT特征（表明项目所属的子类别）
 
-# 3.2 回顾核心词概念
+# 9.3.2 回顾核心词概念
 
-# 3.3 助动词和倒装
+# 9.3.3 助动词和倒装
 
-# 3.4 无限制依赖成分
+# 9.3.4 无限制依赖成分
 # 具有倒装从句和长距离依赖的产生式的语法，使用斜线类别
 nltk.data.show_cfg('grammars/book_grammars/feat1.fcfg')
 tokens = 'who do you claim that you like'.split()
 from nltk import load_parser
 
 cp = load_parser('grammars/book_grammars/feat1.fcfg')
+tree=None
 for tree in cp.parse(tokens):
     print(tree)
 tree.draw()
@@ -154,7 +156,7 @@ for tree in cp.parse(tokens):
     print(tree)
 tree.draw()
 
-# 3.5 德语中的格和性别
+# 9.3.5 德语中的格和性别
 # Ex9-4 基于特征的语法的例子（表示带格的协议的相互作用）
 nltk.data.show_cfg('grammars/book_grammars/german.fcfg')
 
@@ -170,7 +172,7 @@ for tree in cp.parse(tokens):
     print(tree)
 tree.draw()
 
-# 4. 小结
+# 9.4 小结
 # * 上下文无关语法的传统分类是原子符号。特征结构的重要作用之一是捕捉精细的区分，否则将需要数量翻倍的原子类别
 # * 通过使用特征值的变量，可以表达出语法产生式中的限制，使得不同的特征规格之间相互依赖
 # * 在词汇层面指定固定的特征值，并且限制短语中的特征值，使其与“孩子”的对应值相统一（？）
@@ -186,7 +188,7 @@ tree.draw()
 #       * 无限制依赖结构
 #       * 格支配
 
-# 5. 深入阅读
+# 9.5 深入阅读
 # 理论语言学中使用特征是捕捉语音的音素特征
 # 计算语言学提出了语言功能可以被属性——值结构统一捕获
 # 词汇功能语法表示语法关系和与成分结构短语关联的谓词参数结构

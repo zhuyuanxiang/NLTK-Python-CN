@@ -3,12 +3,14 @@
 # 2）将现有数据转换成合适的格式用于分析
 # 3）发布已经创建的资源，方便人们查找和使用
 
-# 1. 语料库结构：安全研究
+# 11.1 语料库结构：安全研究
 # TIMIT语料库是第一个广泛发布的已经标注的语音数据库，为获取声学——语音知识提供数据，支持自动语音识别系统的开发和评估
-# 1.1 TIMIT结构
+# 11.1.1 TIMIT结构
 import nltk
 
-nltk.corpus.timit.fileids()
+for i, fileid in enumerate(nltk.corpus.timit.fileids()):
+    if i < 10:
+        print(i, ')', fileid)
 
 # TIMIT记录了音标和单词，通过phones()可以查看音标
 phonetic = nltk.corpus.timit.phones('dr1-fvmh0/sa1')
@@ -17,13 +19,13 @@ nltk.corpus.timit.word_times('dr1-fvmh0/sa1')
 
 # TIMIT提供了规范的发音
 timitdict = nltk.corpus.timit.transcription_dict()
-timitdict['greasy'] + timitdict['wash'] + timitdict['water']
-phonetic[17:30]
+print(timitdict['greasy'] + timitdict['wash'] + timitdict['water'])
+print(phonetic[17:30])
 
 # 说话人的相关信息
 nltk.corpus.timit.spkrinfo('dr1-fvmh0')
 
-# 1.2 TIMIT的主要设计特点
+# 11.1.2 TIMIT的主要设计特点
 # TIMIT语料库设计中的主要特点：
 # 1） 语料库中包含了语音和字形两个标注层
 # 2） 语料库在多个维度的变化与方言地区和二元音覆盖范围之间取得了平衡
@@ -31,7 +33,7 @@ nltk.corpus.timit.spkrinfo('dr1-fvmh0')
 # 4） 语料库的层次结构
 # 5） 语料库中除了包含了语音数据，还包含了词汇和文字数据
 
-# 1.3 TIMIT的基本数据类型
+# 11.1.3 TIMIT的基本数据类型
 # TIMI包含了两种基本数据类型：词典和文本
 # 词典资源使用记录结构表示，即一个关键字加一个或者多个字段。
 # 词典资源 可以是一个传统字典或者比较词表，也可以是一个短语词典，其中的关键字是一个短语而不是一个词
@@ -42,54 +44,56 @@ nltk.corpus.timit.spkrinfo('dr1-fvmh0')
 # 在最抽象的层面上，文本表示真实的或者虚构的讲话事件，这个事件的时间过程也在文本本身存在。
 # 文本可以是一个小单位，如一个词或者一个句子；也可以是一个完整的叙述或者对话。
 
-# 2. 语料库的生命周期
-# 2.1 创建语料库的3种方案
+# 11.2 语料库的生命周期
+# 11.2.1 创建语料库的3种方案
 # 1） “领域语言学”模式，即来自会话的材料在被收集的同时就被分析。
 # 2） 实验研究模式，从人类中收集主，然后分析来评估一个假设或者开发一种技术。这类数据库是“共同任务”的科研管理方法的基础
 # 3） 特定的语言收集“参考语料”。
 
-# 2.2 质量控制
+# 11.2.2 质量控制
 # 标注指南确定任务并且记录标记约定。
 # Kappa系数测量两个人判断类别，修正预期期望的一致性。
 # windowdiff()评估两个分割的一致性得分。3是窗口的大小
 s1 = '00000010000000001000000'
 s2 = '00000001000000010000000'
 s3 = '00010000000000000001000'
-nltk.windowdiff(s1, s1, 3)
-nltk.windowdiff(s1, s2, 3)
-nltk.windowdiff(s2, s3, 3)
+print(nltk.windowdiff(s1, s1, 3))
+print(nltk.windowdiff(s1, s2, 3))
+print(nltk.windowdiff(s2, s3, 3))
 
-nltk.windowdiff(s1, s2, 6)
-nltk.windowdiff(s2, s3, 6)
+print(nltk.windowdiff(s1, s2, 6))
+print(nltk.windowdiff(s2, s3, 6))
 
-nltk.windowdiff(s1, s2, 1)
-nltk.windowdiff(s2, s3, 1)
+print(nltk.windowdiff(s1, s2, 1))
+print(nltk.windowdiff(s2, s3, 1))
 
-# 2.3 维护与演变
+# 11.2.3 维护与演变
 # 发布原始语料库需要一个能够识别其中任何一部分的规范。
 # 每个句子、树或者词条都有全局唯一的标识符
 # 每个标识符、节点或者字段（分别）都有一个相对领衔
 # 标注包括分割，可以使用规范的标识符引用原始材料。
 # 新的标注可以与原始材料独立分布，同一个来源的多个独立标注可以对比和更新而不影响原始材料。
 
-# 3. 数据采集
-# 3.1 从网络上获取数据
+# 11.3 数据采集
+# 11.3.1 从网络上获取数据
 # RSS订阅、搜索引擎的结果、发布的网页。
 
-# 3.2 从文本文件中获取数据
+# 11.3.2 从文本文件中获取数据
 # 从Word文档中获取数据
 # 将Word文档转存为HTML文档
 
 # 从HTML文档中获取数据
 # 1) 从Word转存的HTML文件与书上的格式不同
 # 2）取出的结果也与书上的不同
+
 import re
 
-legal_pos = set(['n', 'v.t.', 'v.i.', 'adj', 'det'])
+legal_pos = {'n', 'v.t.', 'v.i.', 'adj', 'det'}
 # pattern = re.compile(r"'font-size:11.0pt'")
 # pattern = re.compile(r">([a-z.]+)<")
 pattern = re.compile(r"'font-size:11.0pt'>([a-z.]+)<")
 document = open('dict.htm').read()
+print(document)
 used_pos = set(re.findall(pattern, document))
 print(list(used_pos))
 # 非法词性的集合
@@ -101,9 +105,9 @@ print(list(illegal_pos))
 from bs4 import BeautifulSoup
 
 
-def lexical_data(html_file, encoding = 'utf-8'):
+def lexical_data(html_file, encoding='utf-8'):
     SEP = '_ENTRY'
-    html = open(html_file, encoding = encoding).read()
+    html = open(html_file, encoding=encoding).read()
     print('html1:', html)
     html = re.sub(r'<p', SEP + '<p', html)
     print('html2:', html)
@@ -119,19 +123,26 @@ def lexical_data(html_file, encoding = 'utf-8'):
 
 import csv
 
-writer = csv.writer(open('dict1.csv', 'w', encoding = 'utf-8'))
-writer.writerows(lexical_data('dict.htm', encoding = 'GB2312'))
+dict_csv = open('dict.csv', 'w')
+writer = csv.writer(dict_csv)
+writer.writerows(lexical_data('dict.htm'))
+dict_csv.close()
 
-# 3.3 从电子表格和数据库中获取数据
+# 11.3.3 从电子表格和数据库中获取数据
 import csv
 
-lexicon = csv.reader(open('dict.csv'))
+# 注意删除 dict.csv 中多余的空行
+dict_csv = open('dict.csv')
+lexicon = csv.reader(dict_csv)
+for (lexeme, _, _, defn) in lexicon:
+    print(lexeme,defn)
 pairs = [(lexeme, defn) for (lexeme, _, _, defn) in lexicon]
 lexemes, defns = zip(*pairs)
 defn_words = set(w for defn in defns for w in defn.split())
 sorted(defn_words.difference(lexemes))
+dict_csv.close()
 
-# 3.4 数据格式的转换
+# 11.3.4 数据格式的转换
 idx = nltk.Index((defn_word, lexeme)
                  for (lexeme, defn) in pairs
                  for defn_word in nltk.word_tokenize(defn)
@@ -142,7 +153,7 @@ with open('dict.idx', 'w') as idx_file:
         idx_line = '{}: {}'.format(word, idx_words)
         print(idx_line)
 
-# 3.5 选择需要保留的标注层
+# 11.3.5 选择需要保留的标注层
 # 常用的标注层：
 # - 分词：文本的书写形式不能明确地识别它的标识符。分词和规范化的版本作为常规的正式版本的补充
 # - 断句：因为断句的困难，因此语料库为断句提供明确的标注
@@ -154,12 +165,13 @@ with open('dict.idx', 'w') as idx_file:
 # 内联标注：通过插入带有标注信息的特殊符号或者控制序列修改原始文档
 # 对峙标注：不修改原始文档，而是创建一个新的文档，通过使用指针引用原始文档来增加标注信息
 
-# 3.6 标准和工具
+# 11.3.6 标准和工具
 # 共同的接口：抽象数据类型、面向对象设计、三层结构
 
-# 3.7 处理濒危语言时的特征考虑
+# 11.3.7 处理濒危语言时的特征考虑
 # SIL的自由软件Toolbox和Filedwords对文本和词汇的创建集成提供了很好的支持
 # 使用词义范畴标注词项，允许通过语义范畴或者注释查找
+# 去除单词中的元音、缩写和重复字母
 mappings = [('ph', 'f'), ('ght', 't'), ('^kn', 'n'), ('qu', 'kw'), ('[aeiou]+', 'a'), (r'(.)\1', r'\1')]
 
 
@@ -173,10 +185,12 @@ def signature(word):
 signature('illefent')
 signature('ebsekwieous')
 signature('nuculerr')
+
+# 寻找相同的编码的单词
 signatures = nltk.Index((signature(w), w) for w in nltk.corpus.words.words())
 signatures[signature('nuculerr')]
 
-
+# 寻找相同的编码的单词
 def rank(word, wordlist):
     ranked = sorted((nltk.edit_distance(word, w), w) for w in wordlist)
     return [word for (_, word) in ranked]
@@ -194,20 +208,20 @@ fuzzy_spell('illefent')
 fuzzy_spell('ebsekwieous')
 fuzzy_spell('nucular')
 
-# 4. 使用XML
+# 11.4 使用XML
 # XML(The Extensible Markup Language, 可扩展标记语言)为设计特定领域的标记语言提供了一个框架。
 # 用于表示已经被标注的文本和词汇资源
 # XML允许创建自己的标签；允许创建的数据而不必事先指定其结构；允许有可选的、可重复的元素。
 
-# 4.1 在语言结构中使用XML
+# 11.4.1 在语言结构中使用XML
 # 在结构的XML中，在嵌套的同一级别中所有的开始标签必须结束标记（即XML文档必须是格式良好的树）。
 # XML允许使用重复的元素
 # XML使用“架构（scema）”限制一个XML文件的格式，是一种类似于上下文无关方法的声明。
 
-# 4.2 XML的作用
+# 11.4.2 XML的作用
 # XML提供了一个格式方便和用途广泛的工具
 
-# 4.3 ElementTree接口
+# 11.4.3 ElementTree接口
 # Python的ElementTree模型提供了一种方便的方式用于访问存储在XML文件中的数据。
 merchant_file = nltk.data.find('corpora/shakespeare/merchant.xml')
 raw = open(merchant_file).read()
@@ -254,7 +268,7 @@ speaker_seq2 = [abbreviate[speaker] for speaker in speaker_seq]
 cfd = nltk.ConditionalFreqDist(nltk.bigrams(speaker_seq2))
 cfd.tabulate()
 
-# 4.4 使用ElementTree访问Toolbox的数据
+# 11.4.4 使用ElementTree访问Toolbox的数据
 from nltk.corpus import toolbox
 
 # 访问lexicon对象的内容的两种方法
@@ -276,9 +290,9 @@ from xml.etree.ElementTree import ElementTree
 
 elementtree_indent(lexicon)
 tree = ElementTree(lexicon[3])
-tree.write(sys.stdout, encoding = 'unicode')
+tree.write(sys.stdout, encoding='unicode')
 
-# 4.5 格式化条目
+# 11.4.5 格式化条目
 # 将数据转换为HTML格式输出
 html = "<table>\n"
 for entry in lexicon[70:80]:
@@ -289,13 +303,13 @@ for entry in lexicon[70:80]:
 html += '</table>'
 print(html)
 
-# 5. 使用Toolbox数据
+# 11.5 使用Toolbox数据
 from nltk.corpus import toolbox
 
 lexicon = toolbox.xml('rotokas.dic')
 print(sum(len(entry) for entry in lexicon) / len(lexicon))
 
-# 5.1 为每个条目添加字段
+# 11.5.1 为每个条目添加字段
 # Ex11-2 为词汇条目添加新的cv字段
 from xml.etree.ElementTree import SubElement
 
@@ -319,7 +333,7 @@ lexicon = toolbox.xml('rotokas.dic')
 add_cv_field(lexicon[53])
 print(nltk.toolbox.to_sfm_string(lexicon[53]))
 
-# 5.2 验证Toolbox词汇
+# 11.5.2 验证Toolbox词汇
 # 使用 Counter() 函数快速寻找频率异常的字段序列
 from collections import Counter
 
@@ -370,36 +384,37 @@ example: {<rf|xv><xn|xe>*}
 sense:   {<sn><ps><pn|gv|dv|gn|gp|dn|rn|ge|de|re>*<example>*<lexfunc>*}
 record:  {<lx><hm><sense>+<dt>}
 """
+
 from xml.etree.ElementTree import ElementTree
 from nltk.toolbox import ToolboxData
 
 db = ToolboxData()
 db.open(nltk.data.find('corpora/toolbox/iu_mien_samp.db'))
 # db.parse()解析不了
-lexicon = db.parse(grammar, encoding = 'utf8')
+lexicon = db.parse(grammar, encoding='utf8')
 tree = ElementTree(lexicon)
 with open('iu_mien_samp.xml', 'wb') as output:
     tree.write(output)
 
-# 6. 使用OLAC元数据描述语言资源
+# 11.6 使用OLAC元数据描述语言资源
 # NLP社区成员共同使用的具有很高精度和召回率的语言资源，已经提供的方法是元数据聚焦
 
-# 6.1 什么是元数据？
+# 11.6.1 什么是元数据？
 # “元数据”就是关于数据的结构化数据。是对象或者资源的描述信息。
 # 都柏林核心数据（Dublin Core Metadata）由15个元数据元素组成，每个元素都是可选的和可重复的。
 # 标题、创建者、主题、描述、发布者、参与者、日期、类型、格式、标识符、来源、语言、关系、覆盖范围和版权
 # 开放档案倡议（Open Archives Initiative，OAI）提供了跨越数字化的学术资料库的共同框架，不考虑资源的类型
 
-# 6.2 开放语言档案社区（Open Language Archives Community，OLAC）
+# 11.6.2 开放语言档案社区（Open Language Archives Community，OLAC）
 # 开放语言档案社区正在一种国际性的伙伴关系，这种伙伴关系是创建世界性语言资源的虚拟图书馆的机构和个人
 # 1） 制定目前最好的关于语言资源的数字归档实施的共识
 # 2） 开发、存储和访问这些资源的互操作信息库和服务的网络
 # OLAC元数据是描述语言资源的标准。确保跨库描述的统一性。描述物理和数字格式的数据和工具。添加了语言资源的基本属性。
 
-# 6.3 发布语言资源
+# 11.6.3 发布语言资源
 # 社区成员可以上传语料库和模型来进行发布
 
-# 7. 小结
+# 11.7 小结
 # - 语料库中基本数据类型是已经标注的文本和词汇。
 #     - 文本有时间结构
 #     - 词汇有记录结构
